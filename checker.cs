@@ -1,5 +1,5 @@
 using System;
-namespace VitalChecker
+namespace checker
 {
     public class CheckBPM
     {
