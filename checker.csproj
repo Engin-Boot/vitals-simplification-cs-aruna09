@@ -3,6 +3,6 @@
     <Compile Include="checker.cs"/>
   </ItemGroup>
   <Target Name="Build">
-    <Csc Sources="@(Compile)"/>  
+    <Csc Sources="@(Compile)"/>  
   </Target>
 </Project>

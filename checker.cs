@@ -1,34 +1,69 @@
 using System;
-using System.Diagnostics;
-
-class Checker
+namespace checker
 {
-    static bool vitalsAreOk(float bpm, float spo2, float respRate) {
-        if(bpm < 70 || bpm > 150) {
-            return false;
-        } else if(spo2 < 90) {
-            return false;
-        } else if(respRate < 30 || respRate > 95) {
-            return false;
-        }
-        return true;
-    }
-    static void ExpectTrue(bool expression) {
-        if(!expression) {
-            Console.WriteLine("Expected true, but got false");
-            Environment.Exit(1);
+    public class CheckBPM
+    {
+        public void IsBpmOk(float bpm)
+        {
+            if (bpm < 70)
+                Console.WriteLine("BPM less than the minimum.");
+            else if (bpm > 150)
+                Console.WriteLine("BPM more than the maximum.");
+            else
+                Console.WriteLine("BPM within Limits");
         }
     }
-    static void ExpectFalse(bool expression) {
-        if(expression) {
-            Console.WriteLine("Expected false, but got true");
-            Environment.Exit(1);
+    public class CheckSpo2
+    {
+        public void IsSpo2Ok(float spo2)
+        {
+            if (spo2 < 90)
+                Console.WriteLine("SPo2 less than the minimum.");
+            else
+                Console.WriteLine("SPo2 within Limits");
         }
     }
-    static int Main() {
-        ExpectTrue(vitalsAreOk(100, 95, 60));
-        ExpectFalse(vitalsAreOk(40, 91, 92));
-        Console.WriteLine("All ok");
-        return 0;
+    public class CheckRespRate
+    {
+        public void IsRespRateOk(float respRate)
+        {
+            if (respRate < 30)
+                Console.WriteLine("Respiration Rate less than the minimum.");
+            else if (respRate > 95)
+                Console.WriteLine("Respiration Rate more than the maximum.");
+            else
+                Console.WriteLine("Respiration Rate within Limits");
+        }
+    }
+    public delegate void CheckVitals(float value);
+    public class Checker
+    {
+        CheckVitals vitals;
+        public Checker(CheckVitals vitals)
+        {
+            this.vitals = vitals;
+        }
+        public void CheckVital(float value)
+        {
+            this.vitals.Invoke(value);
+        }
+    }
+
+    class Program
+    {
+        static CheckBPM checkBPM = new CheckBPM();
+        static CheckSpo2 checkSpo2 = new CheckSpo2();
+        static CheckRespRate checkRespRate = new CheckRespRate();
+        static void Main(string[] args)
+        {
+            Checker checkVitalBpm = new Checker(new CheckVitals(checkBPM.IsBpmOk));
+            checkVitalBpm.CheckVital(55);
+
+            Checker checkVitalSpo2 = new Checker(new CheckVitals(checkSpo2.IsSpo2Ok));
+            checkVitalSpo2.CheckVital(99);
+
+            Checker checkVitalRespRate = new Checker(new CheckVitals(checkRespRate.IsRespRateOk));
+            checkVitalRespRate.CheckVital(62);
+        }
     }
 }
